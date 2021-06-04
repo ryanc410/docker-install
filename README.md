@@ -79,9 +79,11 @@ Project Link: [https://github.com/ryanc410/docker-install](https://github.com/ry
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[forks-shield]: https://img.shields.io/github/forks/ryanc410/repo.svg?style=for-the-badge
-[forks-url]: https://github.com/ryanc410/docker-install/network/members
-[stars-shield]: https://img.shields.io/github/stars/github_username/repo.svg?style=for-the-badge
+[stars-shield]: https://img.shields.io/github/stars/ryanc410/docker-install.svg?style=for-the-badge
 [stars-url]: https://github.com/ryanc410/docker-install/stargazers
-[issues-shield]: https://img.shields.io/github/issues/github_username/repo.svg?style=for-the-badge
-[issues-url]: https://github.com/ryanc410/docker-install/issues
+[issues-shield]: https://img.shields.io/github/issues/ryanc410/docker-install.svg?style=for-the-badge
+  [issues-url]: https://github.com/ryanc410/docker-install/issues
+[forks-shield]: https://img.shields.io/github/forks/ryanc410/docker-install.svg?style=for-the-badge
+[forks-url]: https://github.com/ryanc410/docker-install/network/members
+[license-shield]: https://img.shields.io/github/license/ryanc410/docker-install.svg?style=for-the-badge
+[license-url]: https://github.com/ryanc410/docker-install/blob/master/LICENSE.txt4
