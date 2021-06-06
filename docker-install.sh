@@ -18,19 +18,26 @@ else
     fi
 fi
 
+clear
+echo "Updating System.."
 apt update &>/dev/null
-apt-get install apt-transport-https ca-certificates curl gnupg lsb-release -y
+echo "System Updated."
+echo "Installing required apps.."
+apt-get install apt-transport-https ca-certificates curl gnupg lsb-release -y &>/dev/null
+echo "Required apps installed."
 
+echo "Downloading Docker's Public Key.."
  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg &>/dev/null
-
+echo "Adding to sources.list.."
  echo \
   "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
   $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-
+echo "Key added."
+echo "Installing Docker Engine.."
   apt update &>/dev/null && apt-get install docker-ce docker-ce-cli containerd.io -y
         if [[ $? -eq 0 ]];then
             clear
-            echo "Docker was successfully installed.."
+            echo "Docker successfully installed.."
             sleep 3
             echo "Installing Docker-Compose...."
             sleep 2
@@ -40,12 +47,11 @@ apt-get install apt-transport-https ca-certificates curl gnupg lsb-release -y
             sleep 3
             exit 1
         fi
-
+echo "Downloading Docker Compose Binary.."
   curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose &>/dev/null
-
-  chmod +x /usr/local/bin/docker-compose
-
-    echo "Installation Complete."
-    sleep 2
+echo "Making executable.."
+  chmod +x /usr/local/bin/docker-compose &>/dev/null
+echo "Docker Compose Installed."
+echo "Script Complete."
+sleep 2
     exit 0
-    
