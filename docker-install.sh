@@ -1,57 +1,58 @@
-#!/bin/bash
-
-if [[ $EUID -ne 0 ]];then
-    clear
-    echo "******    SCRIPT MUST BE RAN WITH ROOT PRIVILEGES!    ******"
+#!/usr/bin/env bash
+#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# Script Name: docker-install.sh
+# Author     : Ryan C.
+# Date       : 08/14/2024
+# Description: Easy install Docker script.
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+if [[ $EUID -ne 0 ]]; then
+    echo "Try again using sudo.."
     sleep 3
-    exit 3
-else
-    if [[ "$OSTYPE" -ne "linux-gnu" ]]; then
-        clear
-        echo "******    SCRIPT NOT COMPATIBLE WITH THIS OS!!    ******"
-        sleep 2
-        echo "EXITING...."
-        sleep 2
-        exit 4
-    else
-        apt-get remove docker docker-engine docker.io containerd runc &>/dev/null
-    fi
+    exit 1
 fi
+    
+echo "Removing conflicting packages.."
+echo ""
+for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do 
+    apt-get remove $pkg -y &>/dev/null 
+done
 
-clear
-echo "Updating System.."
+echo "Updating repositories.."
+echo ""
 apt update &>/dev/null
-echo "System Updated."
-echo "Installing required apps.."
-apt-get install apt-transport-https ca-certificates curl gnupg lsb-release -y &>/dev/null
-echo "Required apps installed."
 
-echo "Downloading Docker's Public Key.."
- curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg &>/dev/null
-echo "Adding to sources.list.."
- echo \
-  "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-echo "Key added."
-echo "Installing Docker Engine.."
-  apt update &>/dev/null && apt-get install docker-ce docker-ce-cli containerd.io -y
-        if [[ $? -eq 0 ]];then
-            clear
-            echo "Docker successfully installed.."
-            sleep 3
-            echo "Installing Docker-Compose...."
-            sleep 2
-        else
-            clear
-            echo "There was a problem installing Docker.."
-            sleep 3
-            exit 1
-        fi
-echo "Downloading Docker Compose Binary.."
-  curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose &>/dev/null
-echo "Making executable.."
-  chmod +x /usr/local/bin/docker-compose &>/dev/null
-echo "Docker Compose Installed."
-echo "Script Complete."
-sleep 2
+echo "Adding Docker's official GPG key.."
+echo ""
+apt-get install ca-certificates curl -y &>/dev/null
+install -m 0755 -d /etc/apt/keyrings &>/dev/null
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc &>/dev/null
+chmod a+r /etc/apt/keyrings/docker.asc &>/dev/null
+
+echo "Adding repository to Apt sources.."
+echo ""
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$UBUNTU_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+echo "Updating repositories.."
+echo ""
+apt update &>/dev/null
+
+echo "Installing the latest version of Docker.."
+echo ""
+apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y &>/dev/null
+
+echo "Testing installation.."
+echo ""
+docker run hello-world
+
+if [[ $? -eq 0 ]]; then 
+    echo "Docker installation successful!"
+    sleep 3
     exit 0
+else
+    echo "Docker installation failed!"
+    sleep 3
+    exit 1
+fi
